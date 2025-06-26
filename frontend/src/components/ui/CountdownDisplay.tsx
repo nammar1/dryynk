@@ -10,22 +10,22 @@ export function CountdownDisplay({ targetDate }: CountdownDisplayProps) {
   const timeLeft = useCountdown(targetDate)
 
   const timeUnits = [
-    { label: "Months", value: timeLeft.months, color: "from-primary-400 to-primary-500" },
-    { label: "Weeks", value: timeLeft.weeks, color: "from-primary-400 to-primary-500" },
-    { label: "Days", value: timeLeft.days, color: "from-primary-400 to-primary-500" },
-    { label: "Hours", value: timeLeft.hours, color: "from-primary-400 to-primary-500" },
-    { label: "Minutes", value: timeLeft.minutes, color: "from-primary-400 to-primary-500" },
-    { label: "Seconds", value: timeLeft.seconds, color: "from-primary-400 to-primary-500" },
+    { label: "Months", value: timeLeft.months, color: "from-amber-300 to-amber-400" },
+    { label: "Weeks", value: timeLeft.weeks, color: "from-amber-400 to-amber-500" },
+    { label: "Days", value: timeLeft.days, color: "from-amber-500 to-purple-400" },
+    { label: "Hours", value: timeLeft.hours, color: "from-purple-400 to-purple-500" },
+    { label: "Minutes", value: timeLeft.minutes, color: "from-purple-500 to-amber-300" },
+    { label: "Seconds", value: timeLeft.seconds, color: "from-amber-300 to-amber-400" },
   ]
 
   return (
-    <div className="w-full max-w-full mx-auto">
-      <div className="text-center mb-8">
-        <h2 className="text-3xl md:text-4xl font-bold text-neutral-0 mb-4 drop-shadow-lg">Launch Countdown</h2>
-        <div className="w-32 h-1 bg-gradient-to-r from-primary-400 to-primary-500 mx-auto rounded-full"></div>
+    <div className="w-full max-w-4xl mx-auto">
+      <div className="text-center mb-6">
+        <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">Launch Countdown</h2>
+        <div className="w-24 h-1 bg-gradient-to-r from-amber-300 to-purple-400 mx-auto rounded-full"></div>
       </div>
 
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4 md:gap-6 lg:gap-8">
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         {timeUnits.map((unit, index) => (
           <div
             key={unit.label}
@@ -36,24 +36,24 @@ export function CountdownDisplay({ targetDate }: CountdownDisplayProps) {
           >
             {/* Glowing background effect */}
             <div
-              className={`absolute inset-0 bg-gradient-to-br ${unit.color} rounded-2xl blur-lg opacity-30 group-hover:opacity-50 transition-opacity duration-300`}
+              className={`absolute inset-0 bg-gradient-to-br ${unit.color} rounded-xl blur-sm opacity-30 group-hover:opacity-50 transition-opacity duration-300`}
             ></div>
 
             {/* Main countdown card */}
-            <div className="relative bg-neutral-900/50 backdrop-blur-lg border border-primary-400/30 rounded-2xl p-4 md:p-6 lg:p-8 text-center hover:scale-105 transition-transform duration-300 min-h-[120px] md:min-h-[140px] lg:min-h-[160px] flex flex-col justify-center">
+            <div className="relative bg-white/10 backdrop-blur-lg border border-amber-300/30 rounded-xl p-4 text-center hover:scale-105 transition-transform duration-300">
               {/* Animated number */}
               <div
-                className={`text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-bold bg-gradient-to-br ${unit.color} bg-clip-text text-transparent mb-2 md:mb-3 lg:mb-4 font-mono tabular-nums leading-none`}
+                className={`text-3xl md:text-4xl font-bold bg-gradient-to-br ${unit.color} bg-clip-text text-transparent mb-2 font-mono tabular-nums`}
               >
                 {unit.value.toString().padStart(2, "0")}
               </div>
 
               {/* Label */}
-              <div className="text-primary-100 text-xs sm:text-sm md:text-base lg:text-lg font-medium uppercase tracking-wider">{unit.label}</div>
+              <div className="text-amber-100 text-sm font-medium uppercase tracking-wider">{unit.label}</div>
 
               {/* Animated border */}
               <div
-                className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r ${unit.color} rounded-b-2xl transition-all duration-1000`}
+                className={`absolute bottom-0 left-0 h-1 bg-gradient-to-r ${unit.color} rounded-b-xl transition-all duration-1000`}
                 style={{
                   width:
                     unit.label === "Seconds"
@@ -72,21 +72,21 @@ export function CountdownDisplay({ targetDate }: CountdownDisplayProps) {
             </div>
 
             {/* Floating particles effect */}
-            <div className="absolute -top-2 -right-2 w-2 h-2 md:w-3 md:h-3 bg-primary-400 rounded-full animate-ping opacity-75"></div>
-            <div className="absolute -bottom-1 -left-1 w-1 h-1 md:w-2 md:h-2 bg-primary-500 rounded-full animate-pulse"></div>
+            <div className="absolute -top-2 -right-2 w-2 h-2 bg-amber-300 rounded-full animate-ping opacity-75"></div>
+            <div className="absolute -bottom-1 -left-1 w-1 h-1 bg-purple-400 rounded-full animate-pulse"></div>
           </div>
         ))}
       </div>
 
       {/* Progress bar */}
-      <div className="mt-8 md:mt-12 space-y-3">
-        <div className="flex justify-between text-primary-200 text-sm md:text-base">
+      <div className="mt-8 space-y-2">
+        <div className="flex justify-between text-amber-200 text-sm">
           <span>Launch Progress</span>
           <span>Almost there...</span>
         </div>
-        <div className="w-full bg-neutral-900/30 rounded-full h-2 md:h-3 overflow-hidden">
+        <div className="w-full bg-white/10 rounded-full h-2 overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-primary-400 via-primary-500 to-primary-600 rounded-full animate-pulse"
+            className="h-full bg-gradient-to-r from-amber-300 via-purple-400 to-amber-400 rounded-full animate-pulse"
             style={{ width: "75%" }}
           ></div>
         </div>
