@@ -9,9 +9,14 @@ import newsletterRouter from "./src/routes/newsletter.js";
 dotenv.config();
 const app = express();
 
+const allowedOrigins = [
+  'http://localhost:5173', // local dev
+  'https://dryynk.com',    // production
+];
+
 app.use(cors({
-  origin: process.env.FRONTEND_URL || 'http://localhost:5173', // Vite's default port
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true, // if you use cookies/sessions
 }));
 app.use(express.json());
 app.use(cookieParser());
