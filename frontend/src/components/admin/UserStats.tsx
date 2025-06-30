@@ -1,4 +1,4 @@
-import { BarChart, Users } from "lucide-react";
+import { Users } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface Stats {
