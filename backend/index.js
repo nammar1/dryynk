@@ -10,8 +10,9 @@ dotenv.config();
 const app = express();
 
 const allowedOrigins = [
-  'http://localhost:5173', // local dev
-  'https://dryynk.com',    // production
+  'http://localhost:5173',
+  'https://dryynk.com',
+  'https://www.dryynk.com'
 ];
 
 app.use(cors({
