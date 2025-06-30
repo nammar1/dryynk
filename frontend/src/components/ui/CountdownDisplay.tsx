@@ -19,10 +19,10 @@ export function CountdownDisplay({ targetDate }: CountdownDisplayProps) {
   ]
 
   return (
-    <div className="w-full max-w-4xl mx-auto">
+    <div className="w-full max-w-5xl mx-auto">
       <div className="text-center mb-6">
-        <h2 className="text-2xl font-bold text-white mb-2 drop-shadow-lg">Launch Countdown</h2>
-        <div className="w-24 h-1 bg-gradient-to-r from-amber-300 to-purple-400 mx-auto rounded-full"></div>
+        <h2 className="text-4xl font-bold text-white mb-2 drop-shadow-lg">Launch Countdown</h2>
+        <div className="w-75 h-1 bg-gradient-to-r from-amber-300 to-purple-400 mx-auto rounded-full"></div>
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
@@ -40,16 +40,16 @@ export function CountdownDisplay({ targetDate }: CountdownDisplayProps) {
             ></div>
 
             {/* Main countdown card */}
-            <div className="relative bg-white/10 backdrop-blur-lg border border-amber-300/30 rounded-xl p-4 text-center hover:scale-105 transition-transform duration-300">
+            <div className="relative bg-white/10 backdrop-blur-lg border border-amber-300/30 rounded-xl p-4 text-center hover:scale-110 transition-transform duration-300">
               {/* Animated number */}
               <div
-                className={`text-3xl md:text-4xl font-bold bg-gradient-to-br ${unit.color} bg-clip-text text-transparent mb-2 font-mono tabular-nums`}
+                className={`text-3xl md:text-6xl font-bold bg-gradient-to-br ${unit.color} bg-clip-text text-transparent mb-2 font-mono tabular-nums`}
               >
                 {unit.value.toString().padStart(2, "0")}
               </div>
 
               {/* Label */}
-              <div className="text-amber-100 text-sm font-medium uppercase tracking-wider">{unit.label}</div>
+              <div className="text-amber-100 text-lg font-medium uppercase tracking-wider">{unit.label}</div>
 
               {/* Animated border */}
               <div

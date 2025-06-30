@@ -1,29 +1,49 @@
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CountdownDisplay } from "@/components/ui/CountdownDisplay"
-import { Wine, Grape, Users, MapPin, Lock, Eye, EyeOff } from "lucide-react"
+import { Wine, Grape, Users, MapPin, Lock } from "lucide-react"
 import { useState } from "react"
+import { ConnectionStatus } from "../components/ui/ConnectionStatus"
+import { SignupModal } from "../components/ui/SignupModal"
 
 export default function ComingSoonPage() {
-  const [showPassword, setShowPassword] = useState(false)
+  const [showPassword] = useState(false)
   const [isAdminLoggedIn, setIsAdminLoggedIn] = useState(false)
-  const [adminCredentials, setAdminCredentials] = useState({
-    username: "",
-    password: ""
-  })
+  const [adminToken, setAdminToken] = useState("")
+  const [adminLoginError, setAdminLoginError] = useState("")
+  const [, setAdminInfo] = useState<{ name: string; role: string } | null>(null)
+  const [showSignupModal, setShowSignupModal] = useState(false)
 
   // Set target date for countdown (September 15, 2025)
   const targetDate = new Date("2025-09-15T12:00:00")
 
-  const handleAdminLogin = (e: React.FormEvent) => {
+  // Helper to get backend URL
+  const getBackendUrl = (path: string) => {
+    const base = import.meta.env.VITE_BACKEND_URL || "" // fallback to relative
+    return base + path
+  }
+
+  const handleAdminLogin = async (e: React.FormEvent) => {
     e.preventDefault()
-    // For now, just a simple check - in production this would be proper authentication
-    if (adminCredentials.username === "admin" && adminCredentials.password === "admin123") {
-      setIsAdminLoggedIn(true)
-      // Redirect to home page after successful login
+    setAdminLoginError("")
+    try {
+      const res = await fetch(getBackendUrl("/api/admin/login"), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token: adminToken }),
+        credentials: "include"
+      })
+      if (!res.ok) {
+        const data = await res.json()
+        setAdminLoginError(data.error || "Login failed")
+        return
+      }
+      const data = await res.json()
+      setAdminInfo(data.admin)
+      setIsAdminLoggedIn(false)
       window.location.href = "/home"
-    } else {
-      alert("Invalid credentials. Try admin/admin123")
+    } catch (err) {
+      setAdminLoginError("Network error")
     }
   }
 
@@ -51,30 +71,27 @@ export default function ComingSoonPage() {
 
       {/* Main Content */}
       <main className="relative z-10 flex flex-col items-center justify-center min-h-[calc(100vh-4rem)] px-4 text-center">
-        <div className="max-w-4xl mx-auto space-y-8">
+        <div className="max-w-6xl mx-auto space-y-8">
           {/* Hero Section */}
-          <div className="space-y-6">
-            <div className="inline-flex items-center space-x-2 bg-amber-300/20 backdrop-blur-sm rounded-full px-4 py-2 text-amber-200 text-sm font-medium">
+          <div className="space-y-4">
+            <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight flex flex-col items-center">
+              <span className="inline-block text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-purple-300">
+                Where Wine Meets Community
+              </span>
+            </h1>
+            <div className="inline-flex items-center space-x-2 bg-amber-300/20 backdrop-blur-sm rounded-full px-4 py-2 text-amber-200 text-sm font-medium mx-auto">
               <Grape className="h-4 w-4" />
               <span>Coming Soon</span>
             </div>
-
-            <h1 className="text-5xl md:text-7xl font-bold text-white leading-tight">
-              Where Wine
-              <span className="block text-transparent bg-clip-text bg-gradient-to-r from-amber-300 to-purple-300">
-                Meets Community
-              </span>
-            </h1>
-
-            <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto leading-relaxed">
-              The first social platform designed exclusively for wineries and wine vendors to connect, collaborate, and
-              grow their business together.
-            </p>
-          </div>
-
-          {/* Countdown Display */}
-          <div className="my-12">
-            <CountdownDisplay targetDate={targetDate} />
+            <p className="text-xl md:text-2xl text-purple-100 max-w-3xl mx-auto leading-relaxed"></p>
+            <Button
+              type="button"
+              onClick={() => setShowSignupModal(true)}
+              className="mt-2 w-full md:w-auto bg-white/10 border border-white/10 text-white font-bold text-2xl md:text-2xl py-5 px-8 rounded-lg transition-all duration-200 hover:bg-white/30 hover:border-amber-300 hover:text-amber-200 hover:scale-105 backdrop-blur-md shadow-none"
+              style={{ boxShadow: 'none' }}
+            >
+              Be the First To Know When We Launch
+            </Button>
           </div>
 
           {/* Features Preview */}
@@ -96,27 +113,9 @@ export default function ComingSoonPage() {
             </div>
           </div>
 
-          {/* Email Signup */}
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 max-w-md mx-auto">
-            <h2 className="text-2xl font-bold text-white mb-4">Be the First to Know</h2>
-            <p className="text-purple-100 mb-6">Join our exclusive list and get early access when we launch.</p>
-            <form className="space-y-4">
-              <Input
-                type="email"
-                placeholder="Enter your email address"
-                className="bg-white/20 border-white/30 text-white placeholder:text-purple-200 focus:bg-white/30 focus:border-amber-300"
-                required
-              />
-              <Button
-                type="submit"
-                className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 rounded-lg transition-all duration-200 transform hover:scale-105"
-              >
-                Notify Me When Ready
-              </Button>
-            </form>
-            <p className="text-xs text-purple-200 mt-4">
-              No spam, just updates on our launch and exclusive early access.
-            </p>
+          {/* Countdown Display */}
+          <div className="my-8">
+            <CountdownDisplay targetDate={targetDate} />
           </div>
 
           {/* Additional Info */}
@@ -127,54 +126,58 @@ export default function ComingSoonPage() {
         </div>
       </main>
 
+      {/* Signup Modal */}
+      <SignupModal open={showSignupModal} onClose={() => setShowSignupModal(false)}>
+        <h2 className="text-2xl font-bold text-white mb-4">Be the First to Know</h2>
+        <p className="text-purple-100 mb-6">Join our exclusive list and get early access when we launch.</p>
+        <form className="space-y-4">
+          <Input
+            type="email"
+            placeholder="Enter your email address"
+            className="bg-white/20 border-white/30 text-white placeholder:text-purple-200 focus:bg-white/30 focus:border-amber-300"
+            required
+          />
+          <Button
+            type="submit"
+            className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 rounded-lg transition-all duration-200 transform hover:scale-105"
+          >
+            Notify Me When Ready
+          </Button>
+        </form>
+        <p className="text-xs text-purple-200 mt-4">
+          No spam, just updates on our launch and exclusive early access.
+        </p>
+      </SignupModal>
+
       {/* Admin Login Modal */}
       {isAdminLoggedIn && (
         <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 max-w-md w-full border border-white/20">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-2xl font-bold text-white">Admin Login</h2>
-              <button
-                onClick={() => setIsAdminLoggedIn(false)}
-                className="text-white/70 hover:text-white text-2xl"
-              >
-                ×
-              </button>
+            <div className="flex flex-col space-y-4 mb-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-2xl font-bold text-white">Admin Login</h2>
+                <button
+                  onClick={() => setIsAdminLoggedIn(false)}
+                  className="text-white/70 hover:text-white text-2xl"
+                >
+                  ×
+                </button>
+              </div>
+              <ConnectionStatus />
             </div>
-            
             <form onSubmit={handleAdminLogin} className="space-y-4">
               <div>
-                <label className="block text-white text-sm font-medium mb-2">Username</label>
+                <label className="block text-white text-sm font-medium mb-2">Admin Token</label>
                 <Input
-                  type="text"
-                  value={adminCredentials.username}
-                  onChange={(e) => setAdminCredentials({...adminCredentials, username: e.target.value})}
-                  className="bg-white/20 border-white/30 text-white placeholder:text-purple-200 focus:bg-white/30 focus:border-amber-300"
-                  placeholder="Enter username"
+                  type={showPassword ? "text" : "password"}
+                  value={adminToken}
+                  onChange={e => setAdminToken(e.target.value)}
+                  className="bg-white/20 border-white/30 text-white placeholder:text-purple-200 focus:bg-white/30 focus:border-amber-300 pr-10"
+                  placeholder="Enter admin token"
                   required
                 />
               </div>
-              
-              <div>
-                <label className="block text-white text-sm font-medium mb-2">Password</label>
-                <div className="relative">
-                  <Input
-                    type={showPassword ? "text" : "password"}
-                    value={adminCredentials.password}
-                    onChange={(e) => setAdminCredentials({...adminCredentials, password: e.target.value})}
-                    className="bg-white/20 border-white/30 text-white placeholder:text-purple-200 focus:bg-white/30 focus:border-amber-300 pr-10"
-                    placeholder="Enter password"
-                    required
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-white/70 hover:text-white"
-                  >
-                    {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </button>
-                </div>
-              </div>
-              
+              {adminLoginError && <p className="text-red-400 text-sm">{adminLoginError}</p>}
               <Button
                 type="submit"
                 className="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white font-semibold py-3 rounded-lg transition-all duration-200"
@@ -182,9 +185,8 @@ export default function ComingSoonPage() {
                 Login
               </Button>
             </form>
-            
             <p className="text-xs text-purple-200 mt-4 text-center">
-              Demo credentials: admin / admin123
+              Enter your admin token. Contact the site owner if you need access.
             </p>
           </div>
         </div>
