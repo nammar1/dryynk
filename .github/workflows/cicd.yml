@@ -23,39 +23,31 @@ jobs:
           cat > frontend/nginx.conf <<EOL
           server {
               listen 80;
-              server_name dryynk.com;
-              return 301 https://www.dryynk.com$request_uri;
-          }
-          server {
-              listen 443 ssl;
-              server_name dryynk.com;
-              ssl_certificate /etc/letsencrypt/live/dryynk.com/fullchain.pem;
-              ssl_certificate_key /etc/letsencrypt/live/dryynk.com/privkey.pem;
-              return 301 https://www.dryynk.com$request_uri;
-          }
-          server {
-              listen 80;
-              server_name www.dryynk.com;
+              server_name dryynk.com www.dryynk.com;
+              
               # Redirect HTTP to HTTPS
               location / {
-                  return 301 https://$host$request_uri;
+                  return 301 https://\$host\$request_uri;
               }
           }
 
           server {
               listen 443 ssl;
-              server_name www.dryynk.com;
+              server_name dryynk.com www.dryynk.com;
+              
               ssl_certificate /etc/letsencrypt/live/dryynk.com/fullchain.pem;
               ssl_certificate_key /etc/letsencrypt/live/dryynk.com/privkey.pem;
+              
               location / {
                   root /usr/share/nginx/html;
                   index index.html index.htm;
-                  try_files $uri $uri/ /index.html;
+                  try_files \$uri \$uri/ /index.html;
               }
+              
               location /api {
                   proxy_pass http://dryynk-backend:5000/api;
-                  proxy_set_header Host $host;
-                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header Host \$host;
+                  proxy_set_header X-Real-IP \$remote_addr;
               }
           }
           EOL
